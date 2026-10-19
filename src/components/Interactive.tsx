@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type PointerEvent } from "react";
+import { Command, Menu, Volume2, VolumeX, X } from "lucide-react";
 import { profile, projects } from "@/data/portfolio";
 
 const commands: Record<string, string> = {
@@ -108,7 +109,7 @@ export function CommandPalette() {
 
   return (
     <>
-      <button type="button" className="command-trigger" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label="Open command palette">⌘K <kbd>QUICK NAV</kbd></button>
+      <button type="button" className="command-trigger" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-label="Open command palette (Ctrl or Command plus K)"><Command size={16} aria-hidden="true" /><span className="command-short">Ctrl / ⌘ K</span><kbd>QUICK NAV</kbd></button>
       <dialog ref={dialogRef} className="command-dialog" aria-label="Quick navigation" onClose={() => setOpen(false)}>
         <input ref={searchRef} className="command-search" placeholder="Search sections…" value={query} onChange={(event) => setQuery(event.target.value)} aria-label="Filter navigation commands" />
         <div className="command-list">
@@ -151,14 +152,14 @@ export function SoundToggle() {
   }, [enabled]);
 
   useEffect(() => () => { void contextRef.current?.close(); }, []);
-  return <button type="button" data-sound-toggle className="icon-button" onClick={() => setEnabled((previous) => !previous)} aria-pressed={enabled} aria-label={enabled ? "Mute interface sounds" : "Enable interface sounds"} title="Optional interface click tone">{enabled ? "SOUND ON" : "SOUND OFF"}</button>;
+  return <button type="button" data-sound-toggle className="icon-button" onClick={() => setEnabled((previous) => !previous)} aria-pressed={enabled} aria-label={enabled ? "Mute interface sounds" : "Enable interface sounds"} title="Optional interface click tone">{enabled ? <Volume2 size={16} aria-hidden="true" /> : <VolumeX size={16} aria-hidden="true" />}<span className="sound-label">{enabled ? "SOUND ON" : "SOUND OFF"}</span></button>;
 }
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button type="button" className="menu-toggle" aria-expanded={open} aria-controls="primary-navigation" onClick={() => setOpen((value) => !value)}>{open ? "CLOSE" : "MENU"}</button>
+      <button type="button" className="menu-toggle" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="primary-navigation" onClick={() => setOpen((value) => !value)}>{open ? <><X size={16} aria-hidden="true" /> CLOSE</> : <><Menu size={16} aria-hidden="true" /> MENU</>}</button>
       <nav id="primary-navigation" className="nav-links" data-open={open} aria-label="Primary navigation">
         <a href="#about" onClick={() => setOpen(false)}>About</a><a href="#work" onClick={() => setOpen(false)}>Work</a><a href="#research" onClick={() => setOpen(false)}>Research</a><a href="/resume/" onClick={() => setOpen(false)}>Résumé</a>
       </nav>

@@ -11,7 +11,6 @@ export interface ProjectClaim {
 
 export interface Project {
   id: string;
-  image: string;
   title: string;
   category: string;
   summary: string;
@@ -50,7 +49,6 @@ export const profile = {
 export const projects: Project[] = [
   {
     id: "fpo-link",
-    image: "/images/fog-trail-jpg.webp",
     title: "FPOLink TN",
     category: "Agricultural technology · Tamil Nadu",
     summary:
@@ -89,7 +87,6 @@ export const projects: Project[] = [
   },
   {
     id: "portfolioiq",
-    image: "/images/mountain-lake-jpg.webp",
     title: "PortfolioIQ",
     category: "Self-hosted portfolio analytics · Indian equities",
     summary:

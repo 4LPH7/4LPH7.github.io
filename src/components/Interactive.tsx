@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Command, Menu, Volume2, VolumeX, X } from "lucide-react";
 import { profile, projects } from "@/data/portfolio";
 
@@ -37,30 +37,6 @@ export function Terminal() {
         <input ref={input} id="terminal-command" value={value} onChange={(event) => setValue(event.target.value)} autoComplete="off" spellCheck={false} aria-label="Enter a demo terminal command" />
         <button className="sr-only" type="submit">Run command</button>
       </form>
-    </div>
-  );
-}
-
-export function CursorRingField() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  function move(event: PointerEvent<HTMLDivElement>) {
-    if (event.pointerType !== "mouse") return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    setPosition({ x: event.clientX - bounds.left, y: event.clientY - bounds.top });
-  }
-
-  return (
-    <div
-      className="cursor-ring-field"
-      aria-hidden="true"
-      onPointerMove={move}
-      onPointerLeave={() => setPosition({ x: 0, y: 0 })}
-      style={{ "--cursor-x": `${position.x}px`, "--cursor-y": `${position.y}px` } as CSSProperties}
-    >
-      <span />
-      <span />
-      <span />
     </div>
   );
 }
@@ -179,8 +155,6 @@ export function SmoothMotion() {
       const gsap = gsapModule.default;
       const ScrollTrigger = scrollModule.ScrollTrigger;
       gsap.registerPlugin(ScrollTrigger);
-      gsap.to(".hero-image", { clipPath: "inset(0% 0% 0% 0%)", scrollTrigger: { trigger: ".hero-story", start: "top top", end: "bottom bottom", scrub: true } });
-      gsap.to(".hero-content, .hero-caption, .hero-scroll", { autoAlpha: 0, y: -18, scrollTrigger: { trigger: ".hero-story", start: "top top", end: "bottom top", scrub: true } });
       const lenis = new lenisModule.default({ autoRaf: false, smoothWheel: true, lerp: 0.09 });
       const raf = (time: number) => lenis.raf(time * 1000);
       lenis.on("scroll", ScrollTrigger.update);

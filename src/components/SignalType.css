@@ -1,0 +1,60 @@
+.signal-type {
+  --signal-color: #60a5fa;
+  --signal-glow: #93c5fd;
+  --signal-glow-mid: #3b82f6;
+  --signal-glow-far: #1d4ed8;
+
+  color: var(--signal-color);
+  font-family: inherit;
+  font-weight: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-shadow:
+    0 0 4px var(--signal-glow),
+    0 0 12px var(--signal-glow-mid),
+    0 0 28px var(--signal-glow-far);
+  animation: signal-flicker 2.6s linear both;
+  display: inline-block;
+  user-select: none;
+}
+
+.signal-type--blue {
+  --signal-color: #93c5fd;
+  --signal-glow: #bfdbfe;
+  --signal-glow-mid: #3b82f6;
+  --signal-glow-far: #1d4ed8;
+}
+
+.signal-type--green {
+  --signal-color: #9dffc3;
+  --signal-glow: #9dffc3;
+  --signal-glow-mid: #39ff88;
+  --signal-glow-far: #16e66b;
+  font-family: "Courier New", monospace;
+  font-weight: 800;
+}
+
+@keyframes signal-flicker {
+  0%, 8%, 10%, 12%, 30%, 32%, 70%, 72% {
+    opacity: 0;
+    text-shadow: none;
+  }
+  9%, 11%, 31%, 71% {
+    opacity: 0.35;
+    text-shadow: 0 0 4px var(--signal-glow);
+  }
+  13%, 29%, 33%, 69%, 73%, 100% {
+    opacity: 1;
+    text-shadow:
+      0 0 4px var(--signal-glow),
+      0 0 12px var(--signal-glow-mid),
+      0 0 28px var(--signal-glow-far);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-type {
+    animation: none;
+    opacity: 1;
+  }
+}

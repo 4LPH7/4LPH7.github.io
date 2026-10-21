@@ -4,7 +4,14 @@ Interactive portfolio for Arul G. Next.js 16 static export, deployed to GitHub P
 
 ## Stack
 
-Next.js 16 (`output: "export"`), React 19, TypeScript, GSAP + ScrollTrigger, Lenis smooth scroll, React Three Fiber + Rapier (lanyard card), canvas 2D (skills physics, globe), Biome for linting.
+- **Framework:** Next.js 16 (`output: "export"`), React 19, TypeScript
+- **Animations & Effects:**
+  - `SignalType`: Neon-flicker headline entrance reveal with glowing electric blue / green cyberpunk aesthetic
+  - `Lanyard`: 3D interactive physics lanyard card (React Three Fiber + Rapier physics)
+  - `Lenis` smooth scroll & GSAP ScrollTrigger
+  - Interactive 2D Canvas physics (skills gravity field, interactive globe)
+- **Styling:** Custom CSS design token system (`tokens.css`, `site.css`), Sanchez & Unbounded typography
+- **Tooling:** Biome linter, Node test runner
 
 ## Scripts
 
@@ -16,6 +23,15 @@ Next.js 16 (`output: "export"`), React 19, TypeScript, GSAP + ScrollTrigger, Len
 | `npm test` | Unit tests for `src/lib` and `src/data` |
 | `npm run build` | Static export to `out/` |
 | `npm run verify:export` | Checks the exported site |
+
+## Components & Effects
+
+### SignalType (`src/components/SignalType.tsx`)
+A custom neon-style flickering headline component inspired by Signal Type. Supports:
+- Electric blue (`variant="blue"`) and cyberpunk green (`variant="green"`) neon glow palettes
+- Semantic tag rendering (`as="span" | "h1" | "div"`)
+- Multi-tier text shadow glow
+- Complete `@media (prefers-reduced-motion: reduce)` accessibility
 
 ## Editing content
 

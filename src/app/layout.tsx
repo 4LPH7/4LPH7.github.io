@@ -1,15 +1,23 @@
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: JSON-LD needs script text; its code-owned schema is serialized with less-than signs escaped.
 import type { Metadata } from "next";
 import "./globals.css";
-import { SmoothMotion } from "@/components/Interactive";
+import "./site.css";
+import "./site-sections.css";
+import "./site-widgets.css";
+import { SmoothScroll } from "@/components/site/SmoothScroll";
+import { TitleScramble } from "@/components/site/TitleScramble";
+import { themeInitScript } from "@/lib/theme";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://4lph7.me"),
-  title: {
-    default: "ARUL G / 4LPH7 — Software Engineer",
-    template: "%s · 4LPH7",
+  title: "4LPH7",
+  description: "Portfolio of Arul G (4LPH7), a Coimbatore-based early-career full-stack developer exploring data, AI, fintech, and practical software.",
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/ld+json": "/schema.json",
+    },
   },
-  description: "The engineering portfolio of ARUL G: application security, cryptography, and practical software.",
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: "https://4lph7.me",
@@ -18,15 +26,38 @@ export const metadata: Metadata = {
     images: [{ url: "/og.svg", width: 1200, height: 630, alt: "4LPH7 engineering portfolio" }],
   },
   twitter: { card: "summary_large_image", images: ["/og.svg"] },
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: "/favicon.svg", apple: "/splash.png" },
 };
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "ARUL G",
+  "jobTitle": "Software Engineer",
+  "knowsAbout": ["Application Security", "Cryptography", "Data Science"],
+  "url": "https://4lph7.me",
+  "sameAs": ["https://github.com/4LPH7"],
+};
+const schemaJson = JSON.stringify(schema).replace(/</g, "\\u003c");
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <link rel="canonical" href="https://4lph7.me/" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: schemaJson }}
+        />
+      </head>
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
-        <SmoothMotion />
+        <SmoothScroll />
+        <TitleScramble />
         {children}
       </body>
     </html>

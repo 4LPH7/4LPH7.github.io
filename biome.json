@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!out", "!.next", "!node_modules"]
+    "includes": ["**", "!out", "!.next", "!node_modules", "!src/components/reactbits", "!public/lanyard"]
   },
   "linter": {
     "enabled": true,

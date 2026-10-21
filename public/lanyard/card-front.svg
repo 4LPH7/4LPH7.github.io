@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="900" viewBox="0 0 640 900">
+  <rect width="640" height="900" fill="#08090c"/>
+  <pattern id="d" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#ffffff" fill-opacity=".07"/></pattern>
+  <rect width="640" height="900" fill="url(#d)"/>
+  <rect y="0" width="640" height="18" fill="#3b82f6"/>
+  <text x="56" y="150" fill="#3b82f6" font-family="Consolas, 'Courier New', monospace" font-size="26" letter-spacing="4">ACCESS · ALL AREAS</text>
+  <text x="52" y="470" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="128">ARUL G</text>
+  <text x="58" y="540" fill="#3b82f6" font-family="Consolas, 'Courier New', monospace" font-size="40">@4LPH7</text>
+  <text x="58" y="610" fill="#a1a1aa" font-family="Segoe UI, Arial, sans-serif" font-size="34">Full-stack developer</text>
+  <text x="58" y="656" fill="#a1a1aa" font-family="Segoe UI, Arial, sans-serif" font-size="34">Coimbatore, IN</text>
+  <g fill="#ffffff" fill-opacity=".22">
+    <rect x="58" y="760" width="5" height="70"/><rect x="70" y="760" width="3" height="70"/><rect x="80" y="760" width="7" height="70"/><rect x="94" y="760" width="3" height="70"/><rect x="103" y="760" width="5" height="70"/><rect x="116" y="760" width="3" height="70"/><rect x="126" y="760" width="8" height="70"/><rect x="141" y="760" width="3" height="70"/><rect x="150" y="760" width="5" height="70"/><rect x="162" y="760" width="3" height="70"/><rect x="171" y="760" width="7" height="70"/><rect x="185" y="760" width="3" height="70"/><rect x="194" y="760" width="5" height="70"/><rect x="206" y="760" width="3" height="70"/><rect x="215" y="760" width="8" height="70"/><rect x="230" y="760" width="3" height="70"/>
+  </g>
+  <text x="582" y="830" fill="#52525b" text-anchor="end" font-family="Consolas, 'Courier New', monospace" font-size="22">4LPH7.ME</text>
+</svg>

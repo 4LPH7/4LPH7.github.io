@@ -9,3 +9,4 @@ Thumbs.db
 *.tsbuildinfo
 /eslint.config.mjs
 .taste-skill/
+.env*

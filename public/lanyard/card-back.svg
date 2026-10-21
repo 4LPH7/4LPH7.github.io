@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="900" viewBox="0 0 640 900">
+  <rect width="640" height="900" fill="#3b82f6"/>
+  <pattern id="d" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#ffffff" fill-opacity=".18"/></pattern>
+  <rect width="640" height="900" fill="url(#d)"/>
+  <text x="320" y="470" fill="#ffffff" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="150">4LPH7</text>
+  <text x="320" y="540" fill="#ffffff" fill-opacity=".8" text-anchor="middle" font-family="Consolas, 'Courier New', monospace" font-size="28" letter-spacing="4">BREAK · BUILD · SHIP</text>
+  <text x="320" y="830" fill="#ffffff" fill-opacity=".7" text-anchor="middle" font-family="Consolas, 'Courier New', monospace" font-size="24">github.com/4LPH7</text>
+</svg>

@@ -1,30 +1,34 @@
 # 4LPH7.me
 
-Personal engineering portfolio for ARUL G, built with Next.js and exported as static files for GitHub Pages.
+Interactive portfolio for Arul G. Next.js 16 static export, deployed to GitHub Pages at https://4lph7.me.
 
-## Requirements
+## Stack
 
-- Node.js 24 (see `.nvmrc`)
-- npm
+Next.js 16 (`output: "export"`), React 19, TypeScript, GSAP + ScrollTrigger, Lenis smooth scroll, React Three Fiber + Rapier (lanyard card), canvas 2D (skills physics, globe), Biome for linting.
 
-## Local development
+## Scripts
 
-```sh
-npm ci
-npm run dev
-```
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run lint` | Biome lint |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Unit tests for `src/lib` and `src/data` |
+| `npm run build` | Static export to `out/` |
+| `npm run verify:export` | Checks the exported site |
 
-## Checks and production build
+## Editing content
 
-```sh
-npm run lint
-npx tsc --noEmit
-npm run build
-npm run verify:export
-```
+All copy lives in `src/data/site.ts` (name, projects, skills, education, tracks). Unfilled items are listed in its `todo` array. `/resume` renders from the same file.
 
-The static export is generated in `out/`. GitHub Actions deploys it to Pages on pushes to `main`. Configure `4lph7.me` under the repository's **Settings → Pages → Custom domain**; the existing `CNAME` is retained for reference.
+## Contact form
 
-## Portfolio content
+Set `NEXT_PUBLIC_WEB3FORMS_KEY` in `.env` (see [web3forms](https://web3forms.com)). Without it the form reports an error and the visible email link is the fallback.
 
-Edit `src/data/portfolio.ts`. Only publish claims that have a source attached. Repository documentation is evidence that the repository says something, not independent validation of security, performance, or impact. Contact uses the public GitHub profile until a verified email address is added. FPOLink and PortfolioIQ descriptions summarize their linked repository READMEs; each claim links to its source and is labeled self-reported rather than independently audited. The hero's CSS cursor-ring interaction is an original lightweight adaptation inspired by OriginKit's interactive component catalog.
+## Music
+
+Drop four tracks at `public/music/track-1.mp3` … `track-4.mp3` and update titles/artists in `site.tracks`.
+
+## Deploy
+
+Pushing to `main` runs `.github/workflows/deploy.yml` (install, lint, typecheck, test, build, verify, publish). `CNAME` holds the custom domain.

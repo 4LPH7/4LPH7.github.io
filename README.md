@@ -1,50 +1,72 @@
 # 4LPH7.me
 
-Interactive portfolio for Arul G. Next.js 16 static export, deployed to GitHub Pages at https://4lph7.me.
+Modern, interactive portfolio for **Arul G** (@4LPH7). Built with Next.js 16 static export and deployed to GitHub Pages at [4lph7.me](https://4lph7.me).
 
-## Stack
+---
 
-- **Framework:** Next.js 16 (`output: "export"`), React 19, TypeScript
-- **Animations & Effects:**
-  - `SignalType`: Neon-flicker headline entrance reveal with glowing electric blue / green cyberpunk aesthetic
-  - `Lanyard`: 3D interactive physics lanyard card (React Three Fiber + Rapier physics)
-  - `Lenis` smooth scroll & GSAP ScrollTrigger
-  - Interactive 2D Canvas physics (skills gravity field, interactive globe)
-- **Styling:** Custom CSS design token system (`tokens.css`, `site.css`), Sanchez & Unbounded typography
-- **Tooling:** Biome linter, Node test runner
+## Features
+
+- **3D Interactive Lanyard:** Three.js physics simulation with draggable ID badge, metal clasp, textured strap, and flip interactions. Positioned on the left edge and optimized for mobile screens.
+- **Hero Section:** Centered headline powered by React Bits `<TechText />` with vector outlines, specks, and kick physics rendered in the **Sanchez** slab-serif typeface.
+- **Terminal Emulator:** Interactive typewriter CLI terminal showcasing profile status and tech stack.
+- **Interactive Skills Field:** 2D canvas physics simulation where skill tags drop, bounce, and collide under gravity.
+- **3D Dot Globe:** Canvas-based interactive rotating globe with location pinpoint for Coimbatore, IN.
+- **Vinyl Music Player:** Analog-style turntable widget with rotating vinyl record and moving tone-arm.
+- **Responsive & Accessible:** Fluid clamp-based responsive typography, light/dark mode support, and full `prefers-reduced-motion` fallbacks across all animations.
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (`output: "export"`), React 19, TypeScript 5
+- **3D & Graphics:** Three.js, React Three Fiber, Rapier physics, HTML5 Canvas 2D
+- **Animation & Motion:** GSAP + ScrollTrigger, Lenis smooth scrolling
+- **UI & Typography:** Custom token system (`tokens.css`, `site.css`), Sanchez, Instrument Serif & Unbounded fonts
+- **Icons:** Lucide React
+- **Forms:** Web3Forms integration with native mailto fallback
+- **Tooling:** Biome (linting & formatting), Node.js native test runner
+
+---
+
+## Project Structure
+
+```
+├── public/
+│   ├── lanyard/        # SVGs for lanyard card front, back, and strap
+│   └── music/          # Audio tracks for the turntable player
+├── src/
+│   ├── app/            # Next.js App Router pages and global CSS
+│   ├── components/     # Site sections and interactive widgets
+│   │   ├── reactbits/  # React Bits components (TechText, Lanyard)
+│   │   └── site/       # Hero, About, Projects, Skills, Stats, Contact, etc.
+│   ├── data/           # Site content and metadata (site.ts)
+│   └── lib/            # Utility helpers and test suites
+└── components.json     # Shadcn & React Bits Pro registry configuration
+```
+
+---
 
 ## Scripts
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Dev server |
-| `npm run lint` | Biome lint |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm test` | Unit tests for `src/lib` and `src/data` |
-| `npm run build` | Static export to `out/` |
-| `npm run verify:export` | Checks the exported site |
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server on `localhost:3000` |
+| `npm run build` | Build optimized static export to `out/` |
+| `npm run lint` | Run Biome lint checks |
+| `npm run typecheck` | Run TypeScript type checking (`tsc --noEmit`) |
+| `npm test` | Run unit tests (`node --test`) |
+| `npm run verify:export` | Verify static export output |
 
-## Components & Effects
+---
 
-### SignalType (`src/components/SignalType.tsx`)
-A custom neon-style flickering headline component inspired by Signal Type. Supports:
-- Electric blue (`variant="blue"`) and cyberpunk green (`variant="green"`) neon glow palettes
-- Semantic tag rendering (`as="span" | "h1" | "div"`)
-- Multi-tier text shadow glow
-- Complete `@media (prefers-reduced-motion: reduce)` accessibility
+## Configuration & Content
 
-## Editing content
+- **Personal Information:** Edit `src/data/site.ts` to update profile bio, project showcases, skills, education, and social links.
+- **Contact Form:** Add your Web3Forms access key in `.env` or `.env.local` as `NEXT_PUBLIC_WEB3FORMS_KEY`.
+- **Music Tracks:** Place audio files at `public/music/` and configure track details in `src/data/site.ts`.
 
-All copy lives in `src/data/site.ts` (name, projects, skills, education, tracks). Unfilled items are listed in its `todo` array. `/resume` renders from the same file.
+---
 
-## Contact form
+## Deployment
 
-Set `NEXT_PUBLIC_WEB3FORMS_KEY` in `.env` (see [web3forms](https://web3forms.com)). Without it the form reports an error and the visible email link is the fallback.
-
-## Music
-
-Drop four tracks at `public/music/track-1.mp3` … `track-4.mp3` and update titles/artists in `site.tracks`.
-
-## Deploy
-
-Pushing to `main` runs `.github/workflows/deploy.yml` (install, lint, typecheck, test, build, verify, publish). `CNAME` holds the custom domain.
+Every push to `main` triggers `.github/workflows/deploy.yml` which runs lint, typecheck, tests, builds the static export, and publishes to GitHub Pages using the custom domain in `CNAME`.

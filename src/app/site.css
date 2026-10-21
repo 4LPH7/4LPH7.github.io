@@ -124,7 +124,7 @@ body { overflow-x: clip; }
 .hero .lan-static { width: clamp(260px, 30vw, 500px); margin-left: clamp(8px, 2.5vw, 48px); }
 .hero-center { text-align: center; position: relative; z-index: 2; margin-inline: auto; max-width: min(840px, 92vw); }
 .hero-name { margin: 0; }
-.hero-wordmark { display: inline-block; font-family: "Sanchez", Georgia, serif; font-weight: 400; font-size: clamp(2.2rem, 4.5vw, 3.8rem); letter-spacing: 0.05em; line-height: 1.15; color: var(--ink); pointer-events: auto; user-select: none; }
+.hero-wordmark { display: block; width: min(640px, 84vw); height: clamp(72px, 11vw, 120px); margin-inline: auto; color: var(--ink); pointer-events: auto; }
 .hero-lead { margin-top: .6rem; font-size: clamp(1.1rem, 2vw, 1.75rem); color: var(--soft); opacity: 0; animation: rise 1s 1.4s var(--ease) forwards; }
 .hero-lead em { font: italic 1.1em var(--serif); color: var(--ink); }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -154,7 +154,7 @@ body { overflow-x: clip; }
 
 @media (max-width: 767px) {
   .hero .lan-static { width: 64vw; margin-left: 0; height: 50%; }
-  .hero-wordmark { font-size: clamp(1.75rem, 6.5vw, 2.5rem); }
+  .hero-wordmark { width: min(460px, 88vw); height: clamp(60px, 14vw, 88px); }
   .hero-term { width: calc(100% - 24px); }
   .term { min-height: 150px; }
   .term-body { font-size: 12px; }

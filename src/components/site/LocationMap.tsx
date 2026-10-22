@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { SOUTH_INDIA, WORLD } from "@/data/worldMap";
+import { MONO } from "@/app/fonts";
 import { HOME, kind, land } from "@/lib/geo";
 
 const LAT_TOP = WORLD.lat0;
@@ -172,7 +173,7 @@ export function LocationMap() {
       });
       lx.globalAlpha = 1;
       const tn = at(79.05, 9.75);
-      lx.font = `600 ${Math.max(8, r * 0.07)}px 'JetBrains Mono', monospace`;
+      lx.font = `600 ${Math.max(8, r * 0.07)}px ${MONO}`;
       lx.textAlign = "center";
       lx.fillStyle = light ? "rgba(30,64,175,0.85)" : "rgba(191,219,254,0.85)";
       lx.fillText("TAMIL NADU", tn.x, tn.y);
@@ -300,7 +301,7 @@ export function LocationMap() {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(text, cx, cy + 0.5);
-        ctx.font = "500 10px 'JetBrains Mono', monospace";
+        ctx.font = `500 10px ${MONO}`;
         ctx.fillStyle = dim;
         ctx.fillText(`${HOME.lat.toFixed(4)}° N  ·  ${HOME.lon.toFixed(4)}° E`, lens.cx, lens.cy + r + 22);
         ctx.restore();

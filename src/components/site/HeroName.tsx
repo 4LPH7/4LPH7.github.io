@@ -1,5 +1,6 @@
 "use client";
 
+import { HERO } from "@/app/fonts";
 import TechText from "@/components/reactbits/TechText/TechText";
 
 /**
@@ -10,7 +11,7 @@ export function HeroName({ text }: { text: string }) {
     <span className="hero-wordmark" aria-hidden="true">
       <TechText
         text={text.toUpperCase()}
-        fontFamily="Sanchez, Georgia, serif"
+        fontFamily={HERO}
         fontWeight={400}
         fontSize={110}
         letterSpacing={0.04}

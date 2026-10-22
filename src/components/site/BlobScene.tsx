@@ -160,7 +160,7 @@ function Symbiote({ pointer }: { pointer: Pointer }) {
 
 export default function BlobScene({ pointer, active }: { pointer: Pointer; active: boolean }) {
   return (
-    <Canvas camera={{ position: [0, 0, 4.2], fov: 40 }} dpr={[1, 1.75]} frameloop={active ? "always" : "never"} gl={{ alpha: true, antialias: true }}>
+    <Canvas camera={{ position: [0, 0, 4.2], fov: 40 }} dpr={[1, 1.5]} frameloop={active ? "always" : "never"} gl={{ alpha: true, antialias: true }}>
       <ambientLight intensity={0.15} />
       <directionalLight position={[-2, 3, 4]} intensity={1.6} color="#ffffff" />
       <pointLight position={[2.5, -1.5, 2]} intensity={1.2} color="#6366f1" />

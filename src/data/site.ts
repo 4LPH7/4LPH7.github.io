@@ -11,7 +11,7 @@ interface Stage { year: string; icon: "school" | "grad"; stage: string; label: s
 export type SkillCategory = "Frontend" | "Backend" | "Tools";
 export interface Skill { name: string; category: SkillCategory }
 interface FlipCard { id: string; title: string; hint: string; rows: [string, string][] }
-/** `cover`: album art shown on the record label and lock screens (a served path, e.g. /music/one-day.jpg). */
+/** `cover`: album art shown on the record label and lock screens (a served path, e.g. /music/one-day.webp; ~320px is plenty). */
 export interface Track { title: string; artist: string; src: string; cover?: string }
 export interface Social { label: string; href?: string }
 
@@ -108,7 +108,7 @@ export const site = {
   },
   tracks: [
     // Mofjell's orchestral cover of Hans Zimmer's "One Day" (Pirates of the Caribbean: At World's End), 2024 single.
-    { title: "One Day (Epic Version)", artist: "Mofjell", src: "/music/one-day.mp3", cover: "/music/one-day.jpg" },
+    { title: "One Day (Epic Version)", artist: "Mofjell", src: "/music/one-day.mp3", cover: "/music/one-day.webp" },
   ] as Track[],
   educationSpan: "2020 → 2026",
   skills: [

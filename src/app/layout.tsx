@@ -8,6 +8,7 @@ import { PageLoader } from "@/components/site/PageLoader";
 import { SmoothScroll } from "@/components/site/SmoothScroll";
 import { TitleScramble } from "@/components/site/TitleScramble";
 import { themeInitScript } from "@/lib/theme";
+import { fontVariables } from "./fonts";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://4lph7.me"),
@@ -43,11 +44,8 @@ const schemaJson = JSON.stringify(schema).replace(/</g, "\\u003c");
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" className={fontVariables} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://api.fontshare.com" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="canonical" href="https://4lph7.me/" />
         <script

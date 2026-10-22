@@ -142,7 +142,7 @@ export function Player() {
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
     const ms = navigator.mediaSession;
-    ms.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: "4LPH7.me", artwork: track.cover ? [{ src: track.cover, sizes: "600x600", type: "image/jpeg" }] : [] });
+    ms.metadata = new MediaMetadata({ title: track.title, artist: track.artist, album: "4LPH7.me", artwork: track.cover ? [{ src: track.cover, sizes: "320x320", type: "image/webp" }] : [] });
     ms.playbackState = playing ? "playing" : "paused";
     const actions: [MediaSessionAction, MediaSessionActionHandler][] = [
       ["play", () => play()],

@@ -1,3 +1,4 @@
+import { MONO } from "@/app/fonts";
 import { skillIcons } from "@/data/skillIcons";
 import { type Blob, RIM, RIM_DIRS } from "@/lib/foam";
 
@@ -107,7 +108,7 @@ export function drawChip(ctx: CanvasRenderingContext2D, b: Blob, text: string, l
   if (alpha < 0.02) return;
   ctx.save();
   ctx.globalAlpha = alpha;
-  ctx.font = "600 10px 'JetBrains Mono', monospace";
+  ctx.font = `600 10px ${MONO}`;
   const w = ctx.measureText(text).width + 22;
   const x = b.x - w / 2;
   const y = Math.max(6, b.y - b.r - 30 - (1 - alpha) * 6);

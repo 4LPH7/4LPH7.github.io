@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Mrs+Saint+Delafield&family=Unbounded:wght@500;600;700&family=DM+Serif+Display&family=Sanchez:ital@0;1&display=swap");
+/* Fonts are self-hosted through next/font (src/app/fonts.ts). */
 @import "./tokens.css";
 /* Restored from the 14:37 production build after an accidental overwrite. */
 *, :before, :after {
@@ -30,36 +29,6 @@ button {
   background: none;
   border: 0;
   padding: 0;
-}
-
-.marquee {
-  white-space: nowrap;
-  display: flex;
-  overflow: hidden;
-}
-
-.marquee-content {
-  min-width: 100%;
-  animation: marquee var(--speed, 30s) linear infinite;
-  flex: none;
-  padding-right: 2rem;
-  display: flex;
-}
-
-.marquee:hover .marquee-content {
-  animation-play-state: paused;
-}
-
-@keyframes marquee {
-  to {
-    transform: translate(-100%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-content {
-    animation: none;
-  }
 }
 
 html {

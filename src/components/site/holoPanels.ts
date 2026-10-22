@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { MONO } from "@/app/fonts";
 
 /** Canvas-drawn contents for the hologram panels around the droid. Each `draw` repaints and flags the texture. */
 
@@ -56,7 +57,7 @@ export function terminalPanel(): Panel {
       last = t;
       if (acc > 1) { shown++; acc = 0; }
       frame(ctx, w, h, "94,234,212", heat);
-      ctx.font = "600 22px 'JetBrains Mono', monospace";
+      ctx.font = `600 22px ${MONO}`;
       ctx.fillStyle = "rgba(94,234,212,0.9)";
       ctx.fillText("● ● ●   k2so@4lph7: ~", 20, 34);
       const rows = 11;
@@ -88,7 +89,7 @@ export function codePanel(): Panel {
     draw(t, heat) {
       const { ctx, w, h } = c;
       frame(ctx, w, h, "34,211,238", heat);
-      ctx.font = "600 21px 'JetBrains Mono', monospace";
+      ctx.font = `600 21px ${MONO}`;
       const scroll = (t * 26) % 30;
       for (let i = 0; i < 14; i++) {
         const y = 40 + i * 30 - scroll;
@@ -129,7 +130,7 @@ export function radarPanel(): Panel {
         ctx.fillStyle = `rgba(224,242,254,${Math.max(0, 1 - age / 3)})`;
         ctx.beginPath(); ctx.arc(cx + Math.cos(ba) * br, cy + Math.sin(ba) * br, 6, 0, Math.PI * 2); ctx.fill();
       }
-      ctx.font = "600 18px 'JetBrains Mono', monospace";
+      ctx.font = `600 18px ${MONO}`;
       ctx.fillStyle = "rgba(125,211,252,0.9)";
       ctx.fillText("NET SCAN", 18, 30);
       c.tex.needsUpdate = true;
@@ -151,7 +152,7 @@ export function rainPanel(): Panel {
       const dt = Math.min(0.1, t - last);
       last = t;
       frame(ctx, w, h, "34,211,238", heat);
-      ctx.font = "600 17px 'JetBrains Mono', monospace";
+      ctx.font = `600 17px ${MONO}`;
       for (let i = 0; i < cols; i++) {
         drops[i] = (drops[i] + dt * (90 + (i % 5) * 25)) % (h + 160);
         for (let k = 0; k < 9; k++) {

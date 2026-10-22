@@ -81,7 +81,7 @@ export default function RobotScene({ input, active }: { input: Input; active: bo
   const { progress, active: loading } = useProgress();
   return (
     <>
-    <Canvas camera={{ position: [HOME.x, HOME.y, HOME.z], fov: 30 }} dpr={[1, 1.75]} frameloop={active ? "always" : "never"} gl={{ alpha: true, antialias: true }}>
+    <Canvas camera={{ position: [HOME.x, HOME.y, HOME.z], fov: 30 }} dpr={[1, 1.5]} frameloop={active ? "always" : "never"} gl={{ alpha: true, antialias: true }}>
       <ambientLight intensity={0.25} />
       <hemisphereLight args={["#7dd3fc", "#0b1220", 0.5]} />
       <directionalLight position={[2, 5, 6]} intensity={1.4} />

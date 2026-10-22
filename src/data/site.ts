@@ -6,11 +6,13 @@ interface Chapter { number: string; title: string; detail: string }
 interface SiteProject { id: string; title: string; summary: string; tags: string[]; repoUrl?: string }
 /** A heading split into a plain part and a muted italic part. */
 export interface Heading { label: string; plain: string; italic: string }
-interface Stage { year: string; until: string; icon: "school" | "grad"; stage: string; label: string; title: string; organization: string; location: string; period: string; score: string; detail: string }
+/** `year` is the completion year (shown large); `period` is the full span shown under it. */
+interface Stage { year: string; icon: "school" | "grad"; stage: string; label: string; title: string; organization: string; location: string; period: string; score: string; detail: string }
 export type SkillCategory = "Frontend" | "Backend" | "Tools";
 export interface Skill { name: string; category: SkillCategory }
 interface FlipCard { id: string; title: string; hint: string; rows: [string, string][] }
-export interface Track { title: string; artist: string; src: string }
+/** `cover`: album art shown on the record label and lock screens (a served path, e.g. /music/one-day.jpg). */
+export interface Track { title: string; artist: string; src: string; cover?: string }
 export interface Social { label: string; href?: string }
 
 const sections = ["Home", "About", "Projects", "Education", "Skills", "Stats", "Contact"];
@@ -50,17 +52,17 @@ export const site = {
     blurb: "I like useful tools, clear data and code that keeps people's money and identity safe.",
   },
   about: {
-    story: "I build practical software for real problems, from market intelligence for Tamil Nadu farmer groups to self-hosted analytics for Indian equities, with security and clear data at the centre.",
+    story: "I build impactful software that solves real-world problems, including self-hosted analytics for Indian equities. I turn complex data into clear, actionable insights, with a strong focus on security, transparency, and practical value.",
     chapters: [
-      { number: "01", title: "Useful first", detail: "I start with the people and decisions a tool should support, then shape the software around that need." },
-      { number: "02", title: "Transparent data", detail: "Traceable inputs, clear limitations, and outputs people can inspect and question." },
-      { number: "03", title: "Safe by default", detail: "Security and safe defaults belong in the design, especially around money, identity and sensitive data." },
+      { number: "01", title: "Purpose-driven building", detail: "Every project starts with a real problem. I focus on creating tools that fit practical needs and help people make better decisions." },
+      { number: "02", title: "Clarity over complexity", detail: "I turn raw data into understandable insights, keeping information traceable, results transparent, and limitations clear." },
+      { number: "03", title: "Security at the core", detail: "I build with privacy, security, and responsible data handling in mind, using sensible defaults to protect what matters most." },
     ] as Chapter[],
     offKeyboard: [
-      { number: "01", title: "Vibe", detail: "Garuda Linux on a dual-boot laptop, a custom-ROM phone, and too many terminals open at once." },
-      { number: "02", title: "Comfort", detail: "Hosting a Palworld dedicated server so everyone, console players included, can join in." },
-      { number: "03", title: "Active", detail: "Mental-math speed techniques and a little mentalism, mostly for fun." },
-      { number: "04", title: "Facts", detail: "Curious about security and blockchain: SIEM, intrusion detection, and a medical-records chain in Python." },
+      { number: "01", title: "Linux & tinkering", detail: "Running Garuda Linux on a dual-boot laptop, experimenting with custom ROMs, and rarely having fewer than a dozen terminals open." },
+      { number: "02", title: "Gaming & hosting", detail: "Hosting a dedicated Palworld server and bringing PC and console players together for shared adventures." },
+      { number: "03", title: "Mind & memory", detail: "Practising mental-math speed techniques and exploring mentalism for the fun of surprising people." },
+      { number: "04", title: "Security & experimentation", detail: "Exploring SIEM systems, intrusion detection, and blockchain through hands-on projects, including a Python-based medical records system." },
     ] as Chapter[],
   },
   projects: [
@@ -74,9 +76,9 @@ export const site = {
     { id: "greenstack", title: "Greenstack", summary: "Aeroponic vertical tower-farming product concept for Indian households.", tags: ["Hardware", "Agritech", "In progress"] },
   ] as SiteProject[],
   education: [
-    { year: "2020", until: "SSLC", icon: "school", stage: "STAGE 01", label: "FOUNDATION", title: "Secondary Education (SSLC)", organization: "Thiru V.C.V. Government Higher Secondary School", location: "Vellakinar, Tamil Nadu", period: "Class of 2020", score: "78%", detail: "Built fundamentals and early curiosity about technology." },
-    { year: "2020", until: "2022", icon: "school", stage: "STAGE 02", label: "EXPLORATION", title: "Higher Secondary (HSC)", organization: "Thiru V.C.V. Government Higher Secondary School", location: "Vellakinar, Tamil Nadu", period: "2020 — 2022", score: "68%", detail: "Studied Computer Science and Mathematics alongside Physics and Chemistry." },
-    { year: "2022", until: "2026", icon: "grad", stage: "STAGE 03", label: "ENGINEERING", title: "B.E. Computer Science & Engineering (Data Science)", organization: "Annamalai University", location: "Tamil Nadu", period: "2022 — 2026", score: "CGPA 7.3", detail: "Full-stack development, data science and AI integration." },
+    { year: "2020", icon: "school", stage: "STAGE 01", label: "FOUNDATION", title: "Secondary Education (SSLC)", organization: "Thiru V.C.V. Government Higher Secondary School", location: "Vellakinar, Tamil Nadu", period: "Class of 2020", score: "78%", detail: "Built fundamentals and early curiosity about technology." },
+    { year: "2022", icon: "school", stage: "STAGE 02", label: "EXPLORATION", title: "Higher Secondary (HSC)", organization: "Thiru V.C.V. Government Higher Secondary School", location: "Vellakinar, Tamil Nadu", period: "2020 — 2022", score: "68%", detail: "Studied Computer Science and Mathematics alongside Physics and Chemistry." },
+    { year: "2026", icon: "grad", stage: "STAGE 03", label: "ENGINEERING", title: "B.E. Computer Science & Engineering (Data Science)", organization: "Annamalai University", location: "Tamil Nadu", period: "2022 — 2026", score: "CGPA 7.3", detail: "Full-stack development, data science and AI integration." },
   ] as Stage[],
   stats: {
     intro: "A few numbers, a few quirks and what plays while I code.",
@@ -105,7 +107,8 @@ export const site = {
     ] as FlipCard[],
   },
   tracks: [
-    { title: "One Day", artist: "4LPH7 playlist", src: "/music/one-day.mp3" },
+    // Mofjell's orchestral cover of Hans Zimmer's "One Day" (Pirates of the Caribbean: At World's End), 2024 single.
+    { title: "One Day (Epic Version)", artist: "Mofjell", src: "/music/one-day.mp3", cover: "/music/one-day.jpg" },
   ] as Track[],
   educationSpan: "2020 → 2026",
   skills: [
@@ -120,7 +123,6 @@ export const site = {
     { name: "Vercel", category: "Tools" }, { name: "GitHub Actions", category: "Tools" },
   ] as Skill[],
   todo: [
-    "About: confirm the drafted 'Off the keyboard' cards (written from your notes)",
     "Projects: add repo links for AutoIncome/Greenstack once the repos exist",
     "Projects: PortfolioIQ, FPOLink, Absolute Vote, Secure Share and Face Detector summaries were rewritten from each repo's README; check the wording",
     "Projects: FPOLink's 'turmeric and banana in Erode' detail is from the earlier copy, not the README text I could read; confirm it",

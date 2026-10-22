@@ -11,7 +11,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
  * Project browser: numbered list on the left (chips on phones), detail card on the right.
- * Arrow keys work anywhere in the section, the card swipes, and dots jump straight to a project.
+ * Hovering (mouse only, after a short pause so sweeping across the list doesn't flash) or focusing a project shows
+ * it; clicks, arrow keys anywhere in the section, swipes on the card and the dots work too.
  */
 export function Projects() {
   const [i, setI] = useState(0);
@@ -22,7 +23,19 @@ export function Projects() {
   const p = list[i];
 
   const go = useCallback((d: -1 | 1) => { setDir(d); setI((n) => step(n, d, list.length)); }, []);
-  const pick = (n: number) => { setDir(pickDirection(i, n)); setI(n); };
+  const pick = (n: number) => { if (n === i) return; setDir(pickDirection(i, n)); setI(n); };
+  const hoverTimer = useRef(0);
+  const hover = (n: number) => (e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== "mouse") return;
+    // Only in the vertical list: in the phone/tablet chip strip the active chip scrolls into the middle, which would
+    // slide another chip under a still cursor and set off a chain of switches.
+    const strip = e.currentTarget.closest<HTMLElement>(".plist");
+    if (strip && getComputedStyle(strip).flexDirection === "row") return;
+    window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => pick(n), 90);
+  };
+  const unhover = () => window.clearTimeout(hoverTimer.current);
+  useEffect(() => () => window.clearTimeout(hoverTimer.current), []);
 
   // Keep the active chip visible in the horizontal phone strip.
   // Only the strip scrolls; scrollIntoView would also move the page.
@@ -76,7 +89,15 @@ export function Projects() {
         <ol className="plist" aria-label="Projects">
           {list.map((x, n) => (
             <li key={x.id}>
-              <button ref={(el) => { chips.current[n] = el; }} type="button" aria-current={n === i} onClick={() => pick(n)}>
+              <button
+                ref={(el) => { chips.current[n] = el; }}
+                type="button"
+                aria-current={n === i}
+                onClick={() => pick(n)}
+                onFocus={() => pick(n)}
+                onPointerEnter={hover(n)}
+                onPointerLeave={unhover}
+              >
                 <span className="plist-num mono">{pad(n + 1)}</span>
                 <span className="plist-title">{x.title}</span>
                 <span className="plist-tag mono">{x.tags[0]}</span>
@@ -113,7 +134,7 @@ export function Projects() {
           </div>
         </div>
       </div>
-      <p className="hint">CLICK A PROJECT · USE ← → · OR SWIPE</p>
+      <p className="hint"><span className="hint-fine">HOVER OR CLICK A PROJECT · USE ← →</span><span className="hint-touch">TAP A PROJECT · OR SWIPE</span></p>
     </section>
   );
 }

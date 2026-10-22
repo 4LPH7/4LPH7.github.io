@@ -111,3 +111,21 @@ export function burst(bodies: Body[], x: number, y: number, strength = 900, radi
     b.vy += (dy / d) * f;
   }
 }
+
+/**
+ * Hover push: bubbles near the pointer are shoved away, harder the closer they are. `boost` (>= 1) grows with
+ * pointer speed so a quick swipe parts the cluster. `skip` is left alone (the hovered or held bubble).
+ */
+export function repel(bodies: Body[], x: number, y: number, dt: number, boost = 1, skip = -1, radius = 90, strength = 3200) {
+  bodies.forEach((b, i) => {
+    if (i === skip) return;
+    const dx = b.x - x;
+    const dy = b.y - y;
+    const d = Math.hypot(dx, dy) || 1;
+    const reach = radius + b.r;
+    if (d >= reach) return;
+    const f = strength * boost * (1 - d / reach) ** 2 * dt;
+    b.vx += (dx / d) * f;
+    b.vy += (dy / d) * f;
+  });
+}

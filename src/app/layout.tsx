@@ -4,6 +4,7 @@ import "./globals.css";
 import "./site.css";
 import "./site-sections.css";
 import "./site-widgets.css";
+import { PageLoader } from "@/components/site/PageLoader";
 import { SmoothScroll } from "@/components/site/SmoothScroll";
 import { TitleScramble } from "@/components/site/TitleScramble";
 import { themeInitScript } from "@/lib/theme";
@@ -55,6 +56,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body>
+        <PageLoader />
+        <noscript><style>{".page-loader{display:none}"}</style></noscript>
         <a className="skip-link" href="#main">Skip to content</a>
         <SmoothScroll />
         <TitleScramble />

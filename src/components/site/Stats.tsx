@@ -3,7 +3,7 @@
 import { Github, RotateCw } from "lucide-react";
 import { useState } from "react";
 import { site } from "@/data/site";
-import { Globe } from "./Globe";
+import { LocationMap } from "./LocationMap";
 import { Player } from "./Player";
 import { SectionHeading } from "./SectionHeading";
 
@@ -16,24 +16,28 @@ const location = card("location");
 /** Two-sided card: hover flips it on mouse devices, the button flips it everywhere (touch and keyboard). */
 function FlipCard() {
   const [flipped, setFlipped] = useState(false);
-  const face = (c: typeof runtime) => (
+  // Each face carries its own tip, so the tip turns with the card.
+  const face = (c: typeof runtime, other: typeof runtime) => (
     <>
       <h3 className="st-title">{c.title}</h3>
       <dl className="st-rows">
         {c.rows.map(([k, v]) => <div key={k}><dt>{k}:</dt> <dd>{v}</dd></div>)}
       </dl>
+      <p className="flip-tip" aria-hidden="true">
+        <RotateCw size={12} />
+        <span className="hint-fine">CLICK TO SEE {other.title.toUpperCase()}</span>
+        <span className="hint-touch">TAP TO SEE {other.title.toUpperCase()}</span>
+      </p>
     </>
   );
   return (
     <article className="flip" data-flipped={flipped} data-reveal>
       <div className="flip-inner">
-        <div className="flip-face card" aria-hidden={flipped}>{face(runtime)}</div>
-        <div className="flip-face flip-back card" aria-hidden={!flipped}>{face(hardware)}</div>
+        <div className="flip-face card" aria-hidden={flipped}>{face(runtime, hardware)}</div>
+        <div className="flip-face flip-back card" aria-hidden={!flipped}>{face(hardware, runtime)}</div>
       </div>
+      {/* The whole card is the toggle. */}
       <button type="button" className="flip-btn" aria-pressed={flipped} onClick={() => setFlipped((f) => !f)}>
-        <RotateCw size={12} aria-hidden="true" />
-        <span className="hint-fine">HOVER TO FLIP</span>
-        <span className="hint-touch">TAP TO FLIP</span>
         <span className="sr-only">{flipped ? "Show run time" : "Show hardware"}</span>
       </button>
     </article>
@@ -66,7 +70,7 @@ export function Stats() {
         <article className="card b-loc" data-reveal>
           <h3 className="st-title">{location.title}</h3>
           <p className="b-note">{location.rows.map(([, v]) => v).slice(0, 2).join(", ")}</p>
-          <Globe />
+          <LocationMap />
         </article>
         <div className="b-player" data-reveal><Player /></div>
         <div className="b-flip"><FlipCard /></div>

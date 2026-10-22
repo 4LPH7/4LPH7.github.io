@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { type Body, hit, poke, radiusFor, settle, step } from "./bubbles.ts";
+import { type Body, hit, poke, radiusFor, repel, settle, step } from "./bubbles.ts";
 
 const W = 600;
 const H = 400;
@@ -49,4 +49,19 @@ test("poke kicks a bubble upward", () => {
 test("radius grows with label length and respects the scale", () => {
   assert.ok(radiusFor("Next.js", 1) > radiusFor("Git", 1));
   assert.ok(radiusFor("Next.js", 0.5) < radiusFor("Next.js", 1));
+});
+
+test("repel pushes nearby bubbles away from the pointer and skips the hovered one", () => {
+  const near: Body = { x: 100, y: 0, vx: 0, vy: 0, r: 20 };
+  const far: Body = { x: 1000, y: 0, vx: 0, vy: 0, r: 20 };
+  const hovered: Body = { x: 5, y: 0, vx: 0, vy: 0, r: 20 };
+  repel([near, far, hovered], 0, 0, 1 / 60, 1, 2);
+  assert.ok(near.vx > 0, "near bubble moves away (+x)");
+  assert.equal(far.vx, 0);
+  assert.equal(hovered.vx, 0);
+  const slow = { ...near, vx: 0 };
+  const fast = { ...near, vx: 0 };
+  repel([slow], 0, 0, 1 / 60, 1);
+  repel([fast], 0, 0, 1 / 60, 3);
+  assert.ok(fast.vx > slow.vx, "a faster pointer pushes harder");
 });

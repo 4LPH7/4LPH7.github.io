@@ -29,7 +29,7 @@ export function SiteFooter() {
           </nav>
         </div>
         <div className="foot-bottom">
-          <p className="foot-name" aria-hidden="true">{site.name.split(" ")[0]}</p>
+          <p className="foot-name" aria-hidden="true">{site.handle}</p>
           <BackToTop />
         </div>
       </div>

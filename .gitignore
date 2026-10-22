@@ -10,3 +10,6 @@ Thumbs.db
 /eslint.config.mjs
 .taste-skill/
 .env*
+
+# Claude Code local settings
+.claude/settings.local.json

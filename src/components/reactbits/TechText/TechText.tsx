@@ -61,11 +61,16 @@ export interface TechTextProps {
   intro?: 'none' | 'type' | 'assemble' | 'metrics' | 'scramble';
   introDuration?: number;
   guides?: boolean;
+  /**
+   * Local addition: CSS selector of an ancestor the canvas may cover (e.g. ".hero"). The text keeps its layout in this
+   * box, but dragged letters stay visible anywhere inside that ancestor instead of being clipped at this box.
+   */
+  bounds?: string;
   className?: string;
   style?: CSSProperties;
 }
 
-type Settings = Required<Omit<TechTextProps, 'className' | 'style'>>;
+type Settings = Required<Omit<TechTextProps, 'className' | 'style' | 'bounds'>>;
 
 const LABEL_FONT = '10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
 const FALLOFF_STEPS = 8;
@@ -125,6 +130,7 @@ const TechText = ({
   intro = 'none',
   introDuration = 2,
   guides = false,
+  bounds,
   className = '',
   style
 }: TechTextProps) => {
@@ -132,6 +138,8 @@ const TechText = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const settingsRef = useRef<Settings | null>(null);
   const wakeRef = useRef<() => void>(() => {});
+  const boundsRef = useRef(bounds);
+  boundsRef.current = bounds;
 
   useEffect(() => {
     settingsRef.current = {
@@ -190,6 +198,11 @@ const TechText = ({
     let pulse = 0;
     let placed = false;
     let dragging = -1;
+    // Canvas may be larger than the container (see `bounds`): the container sits at (ox, oy) inside a cw x ch canvas.
+    let ox = 0;
+    let oy = 0;
+    let cw = 1;
+    let ch = 1;
     let cursor = '';
     let introClock = 0;
     let introKind = '';
@@ -437,10 +450,10 @@ const TechText = ({
       ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
       ctx.globalCompositeOperation = 'source-over';
 
-      const x0 = Math.max(0, Math.floor(cx - radius));
-      const y0 = Math.max(0, Math.floor(cy - radius));
-      const x1 = Math.min(canvas.width, Math.ceil(cx + radius));
-      const y1 = Math.min(canvas.height, Math.ceil(cy + radius));
+      const x0 = Math.max(-ox * dpr, Math.floor(cx - radius));
+      const y0 = Math.max(-oy * dpr, Math.floor(cy - radius));
+      const x1 = Math.min(canvas.width - ox * dpr, Math.ceil(cx + radius));
+      const y1 = Math.min(canvas.height - oy * dpr, Math.ceil(cy + radius));
       if (x1 <= x0 || y1 <= y0) return;
       const w = x1 - x0;
       const h = y1 - y0;
@@ -531,7 +544,7 @@ const TechText = ({
       const y1 = crisp(frame.y1);
       const x2 = crisp(frame.x2);
       const y2 = crisp(frame.y2);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.setTransform(dpr, 0, 0, dpr, ox * dpr, oy * dpr);
       ctx.fillStyle = accent;
       ctx.strokeStyle = accent;
       ctx.lineWidth = 1;
@@ -592,7 +605,7 @@ const TechText = ({
       const x1 = Math.round(view.left - pad);
       const x2 = Math.round(view.right + pad);
       const room = width - x2 > x1;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.setTransform(dpr, 0, 0, dpr, ox * dpr, oy * dpr);
       ctx.strokeStyle = accent;
       ctx.fillStyle = accent;
       ctx.lineWidth = 1;
@@ -618,7 +631,7 @@ const TechText = ({
         }
       });
       ctx.textAlign = 'left';
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.setTransform(1, 0, 0, 1, ox * dpr, oy * dpr);
       ctx.globalAlpha = 1;
     };
 
@@ -761,6 +774,12 @@ const TechText = ({
       raf = 0;
       const s = settingsRef.current;
       if (!s) return;
+      // The text can shift inside `bounds` without either box resizing (e.g. a font loads below it): re-sync the offset.
+      if (boundsEl) {
+        const c = container.getBoundingClientRect();
+        const b = boundsEl.getBoundingClientRect();
+        if (Math.abs(c.left - b.left - ox) > 0.5 || Math.abs(c.top - b.top - oy) > 0.5 || Math.abs(b.width - cw) > 0.5 || Math.abs(b.height - ch) > 0.5) fit();
+      }
       const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
       last = now;
       const { ink, accent } = palette(s);
@@ -894,6 +913,7 @@ const TechText = ({
       ctx.globalCompositeOperation = 'source-over';
       ctx.globalAlpha = 1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(1, 0, 0, 1, ox * dpr, oy * dpr);
       for (const glyph of glyphs) {
         const moved = Math.hypot(glyph.offset.x, glyph.offset.y);
         if (moved > 1) {
@@ -979,13 +999,31 @@ const TechText = ({
     };
     wakeRef.current = wake;
 
-    const resize = () => {
+    const boundsEl = boundsRef.current ? container.parentElement?.closest<HTMLElement>(boundsRef.current) ?? null : null;
+    /** Size the canvas (and its offset when it covers `bounds`) without scheduling a frame. */
+    const fit = () => {
       width = Math.max(1, container.clientWidth);
       height = Math.max(1, container.clientHeight);
       dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
+      if (boundsEl) {
+        const c = container.getBoundingClientRect();
+        const b = boundsEl.getBoundingClientRect();
+        ox = c.left - b.left;
+        oy = c.top - b.top;
+        cw = Math.max(1, b.width);
+        ch = Math.max(1, b.height);
+        Object.assign(canvas.style, { position: 'absolute', left: `${-ox}px`, top: `${-oy}px`, width: `${cw}px`, height: `${ch}px`, maxWidth: 'none', maxHeight: 'none', pointerEvents: 'none' });
+      } else {
+        ox = oy = 0;
+        cw = width;
+        ch = height;
+      }
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
       layoutKey = '';
+    };
+    const resize = () => {
+      fit();
       wake();
     };
 
@@ -996,6 +1034,10 @@ const TechText = ({
     };
     const onMove = (e: PointerEvent) => {
       locate(e);
+      if (dragging >= 0 && boundsEl) {
+        pointer.x = Math.min(Math.max(pointer.x, -ox + 24), -ox + cw - 24);
+        pointer.y = Math.min(Math.max(pointer.y, -oy + 24), -oy + ch - 24);
+      }
       pointer.inside = true;
       wake();
     };
@@ -1053,6 +1095,7 @@ const TechText = ({
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
+    if (boundsEl) resizeObserver.observe(boundsEl);
     const intersectionObserver = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       wake();

@@ -62,13 +62,13 @@ export function Lanyard() {
           size={0.43}
           strapLength={0.7}
         />
-      ) : (
+      ) : mode === "static" ? (
         <div className="lan-static">
           <p className="lan-name">{site.name.toUpperCase()}</p>
           <p className="lan-handle">@{site.handle}</p>
           <p>Full-stack developer · {site.location}</p>
         </div>
-      )}
+      ) : null /* pending or waiting to scroll near: render nothing so the fallback text doesn't flash on reload */}
     </section>
   );
 }

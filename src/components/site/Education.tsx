@@ -6,7 +6,7 @@ import { site } from "@/data/site";
 import { SectionHeading } from "./SectionHeading";
 
 /**
- * Centre-line timeline. Cards alternate sides with a big start year opposite; the blue line fills as you scroll
+ * Centre-line timeline. Cards alternate sides with the big completion year opposite; the blue line fills as you scroll
  * and each node lights up once the fill passes it.
  */
 export function Education() {
@@ -58,7 +58,7 @@ export function Education() {
               </article>
               <div className="tl-year" data-reveal>
                 <p className="tl-year-big">{e.year}</p>
-                <p className="mono tl-year-sub"><span aria-hidden="true">→ </span>{e.until}<span className="sr-only">, {e.period}</span></p>
+                <p className="mono tl-year-sub">{e.period.toUpperCase()}</p>
               </div>
             </li>
           );

@@ -23,6 +23,7 @@ export function HeroName({ text }: { text: string }) {
         introDuration={2}
         clickKick
         guides={false}
+        bounds=".hero"
       />
     </span>
   );

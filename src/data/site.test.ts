@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { site } from "./site.ts";
+import { skillIcons } from "./skillIcons.ts";
 
 test("nav lists every page section in order", () => {
   assert.deepEqual(site.nav.map((n) => n.id), ["home", "about", "projects", "education", "skills", "stats", "contact"]);
@@ -62,11 +63,15 @@ test("OmniRoute is not listed in selected work", () => {
   assert.ok(!site.projects.some((p) => /omniroute/i.test(p.id + p.title)));
 });
 
-test("skills: 17 unique items split 8 Frontend / 5 Backend / 4 Tools", () => {
-  assert.equal(site.skills.length, 17);
-  assert.equal(new Set(site.skills.map((s) => s.name)).size, 17);
+test("skills: 24 unique items split 10 Frontend / 9 Backend / 5 Tools", () => {
+  assert.equal(site.skills.length, 24);
+  assert.equal(new Set(site.skills.map((s) => s.name)).size, 24);
   const n = (c: string) => site.skills.filter((s) => s.category === c).length;
-  assert.deepEqual([n("Frontend"), n("Backend"), n("Tools")], [8, 5, 4]);
+  assert.deepEqual([n("Frontend"), n("Backend"), n("Tools")], [10, 9, 5]);
+});
+
+test("skills: every skill has a toolbox icon", () => {
+  for (const s of site.skills) assert.ok(skillIcons[s.name]?.d, s.name);
 });
 
 test("stats: hireable, a real repo count, a latest-push note and three flip cards", () => {

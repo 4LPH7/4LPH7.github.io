@@ -60,6 +60,8 @@ body { overflow-x: clip; }
 .pill-status { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-line); background: var(--card-2); font-size: 11px; font-weight: 500; }
 .pill-status i, .chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); animation: pulse 2s infinite; }
 @keyframes pulse { 50% { opacity: .45; } }
+/* Set by RevealOnScroll on sections out of view: a running loop there still costs a style + layer pass every frame. */
+[data-offscreen] *, [data-offscreen] *::before, [data-offscreen] *::after { animation-play-state: paused !important; }
 
 /* section heading */
 .sh-eyebrow { display: flex; align-items: center; gap: 14px; font: 500 10px var(--mono); letter-spacing: .32em; color: var(--dim); }
@@ -126,8 +128,9 @@ body { overflow-x: clip; }
     linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 40px 40px,
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 40px 40px, var(--bg); }
 /* Canvas spans the whole hero above its content so the card can be dragged anywhere; the canvas itself is click-through except over the card. Below menu (50) and nav (60). */
-.hero .lan { position: absolute; inset: 0; z-index: 45; padding: 0; min-height: 0; border: 0; background: none; pointer-events: none; filter: drop-shadow(0 30px 40px #000a); }
-.hero .lan-static { width: clamp(260px, 30vw, 500px); margin-left: clamp(8px, 2.5vw, 48px); }
+.hero .lan { position: absolute; inset: 0; z-index: 45; padding: 0; min-height: 0; border: 0; background: none; pointer-events: none; }
+/* Shadow only on the static card: a drop-shadow over the live full-hero canvas re-blurs the whole hero every frame. */
+.hero .lan-static { width: clamp(260px, 30vw, 500px); margin-left: clamp(8px, 2.5vw, 48px); filter: drop-shadow(0 30px 40px #000a); }
 /* z-index 4: above the terminal and badge so dragged name letters stay on top; the ID card (45) stays above them. */
 .hero-center { text-align: center; position: relative; z-index: 4; margin-inline: auto; max-width: min(840px, 92vw); }
 .hero-name { margin: 0; }

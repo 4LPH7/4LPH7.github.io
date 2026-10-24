@@ -42,13 +42,15 @@ export function Robot() {
     io.observe(el);
     const soon = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); soon.disconnect(); } }, { rootMargin: "600px" });
     soon.observe(el);
+    // Also mount once the page is idle after load, so the model parse and shader compile don't stall the scroll out of the hero.
+    const idle = window.setTimeout(() => (window.requestIdleCallback ?? ((f: () => void) => f()))(() => setNear(true)), 1500);
     const move = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
       input.current.x = Math.max(-1.5, Math.min(1.5, ((e.clientX - r.left) / r.width) * 2 - 1));
       input.current.y = Math.max(-1.5, Math.min(1.5, -(((e.clientY - r.top) / r.height) * 2 - 1)));
     };
     window.addEventListener("pointermove", move, { passive: true });
-    return () => { io.disconnect(); soon.disconnect(); window.removeEventListener("pointermove", move); };
+    return () => { io.disconnect(); soon.disconnect(); window.clearTimeout(idle); window.removeEventListener("pointermove", move); };
   }, [mode]);
 
   // Drag to orbit: past a few pixels a press becomes a drag (no wave), turning the camera with a little momentum.

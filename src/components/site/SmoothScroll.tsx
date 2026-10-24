@@ -11,7 +11,7 @@ export function SmoothScroll() {
     void Promise.all([import("lenis"), import("gsap"), import("gsap/ScrollTrigger")]).then(([{ default: Lenis }, { default: gsap }, { ScrollTrigger }]) => {
       if (disposed) return;
       gsap.registerPlugin(ScrollTrigger);
-      const lenis = new Lenis({ autoRaf: false, smoothWheel: true, lerp: 0.09, anchors: true });
+      const lenis = new Lenis({ autoRaf: false, smoothWheel: true, lerp: 0.12, wheelMultiplier: 1, anchors: true }); // lerp: higher = snappier, lower = floatier
       const raf = (time: number) => lenis.raf(time * 1000);
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add(raf);

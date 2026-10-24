@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { codePanel } from "./holoPanels";
 import { Crate, GamingLaptop, HoloPanels, Motes, NeonFloor } from "./HoloProps";
 import { type Drive, K2SO, KEYS } from "./K2SO";
+import { Precompile } from "./Precompile";
 
 /** Drag-to-orbit state: extra yaw/pitch (rad) on top of the home view, their velocities, and when the drag ended. */
 export type Orbit = { yaw: number; pitch: number; vYaw: number; vPitch: number; dragging: boolean; releasedAt: number };
@@ -87,15 +88,18 @@ export default function RobotScene({ input, active }: { input: Input; active: bo
       <directionalLight position={[2, 5, 6]} intensity={1.4} />
       <directionalLight position={[-4, 3, -3]} intensity={2.2} color="#3b82f6" />
       <directionalLight position={[4, 2, -3]} intensity={2.6} color="#22d3ee" />
-      <Suspense fallback={null}>
-        <K2SO drive={drive} />
-      </Suspense>
       <Crate />
       <GamingLaptop screen={screen.tex} />
       <HoloPanels heat={heat} screen={screen} />
       <NeonFloor />
       <Motes />
-      <ContactShadows position={[0, 0, 0]} opacity={0.6} scale={8} blur={2.4} far={3} />
+      <Suspense fallback={null}>
+        <K2SO drive={drive} />
+        {/* Mounts with the model, drawn once: the seated droid's feet and crate barely move, and re-rendering the
+            whole scene plus two blur passes every frame was a large share of this card's cost. */}
+        <ContactShadows position={[0, 0, 0]} opacity={0.6} scale={8} blur={2.4} far={3} frames={1} />
+        <Precompile />
+      </Suspense>
       <Director input={input} drive={drive} heat={heat} />
     </Canvas>
     {loading || progress < 100 ? <span className="robot-boot" aria-hidden="true">BOOTING K-2SO… {Math.round(progress)}%</span> : null}

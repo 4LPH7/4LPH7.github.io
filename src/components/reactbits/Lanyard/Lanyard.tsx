@@ -465,7 +465,39 @@ const buildBandGeometry = (count: number) => {
   return geometry;
 };
 
-const buildEnvironment = (renderer: THREE.WebGLRenderer) => {
+/**
+ * PMREM's blur shaders compile synchronously on first use (~0.9 s on integrated GPUs, freezing the page). Create them
+ * up front and compile them in the background (KHR_parallel_shader_compile) in the render-target state fromScene uses.
+ */
+const warmPmrem = async (renderer: THREE.WebGLRenderer, pmrem: THREE.PMREMGenerator) => {
+  // ponytail: uses PMREMGenerator privates (three 0.186); if they change this is a no-op and fromScene compiles inline.
+  const p = pmrem as unknown as {
+    _setSize?: (size: number) => void;
+    _allocateTargets?: () => THREE.WebGLRenderTarget;
+    _blurMaterial?: THREE.Material | null;
+    _ggxMaterial?: THREE.Material | null;
+    _lodMeshes?: THREE.Mesh[];
+  };
+  try {
+    if (!p._setSize || !p._allocateTargets) return;
+    p._setSize(256); // fromScene's default size, so it reuses these materials
+    const target = p._allocateTargets();
+    const geometry = p._lodMeshes?.[0]?.geometry; // real vertex layout: ANGLE (D3D) recompiles per input layout
+    if (!geometry) return;
+    const group = new THREE.Group();
+    for (const m of [p._blurMaterial, p._ggxMaterial]) if (m) group.add(new THREE.Mesh(geometry, m));
+    const previous = renderer.getRenderTarget();
+    renderer.setRenderTarget(target);
+    const ready = renderer.compileAsync(group, new THREE.OrthographicCamera());
+    renderer.setRenderTarget(previous);
+    await ready;
+    target.dispose();
+  } catch {
+    // fromScene still works; it just compiles on the spot
+  }
+};
+
+const buildEnvironment = (renderer: THREE.WebGLRenderer, pmrem: THREE.PMREMGenerator) => {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0.035, 0.035, 0.04);
   const geometry = new THREE.PlaneGeometry(1, 1);
@@ -491,7 +523,6 @@ const buildEnvironment = (renderer: THREE.WebGLRenderer) => {
   panel(1.4, [0, 6, -6], [12, 4]);
   panel(0.5, [0, -7, 1], [16, 6]);
   panel(0.9, [8, 0, -2], [4, 10]);
-  const pmrem = new THREE.PMREMGenerator(renderer);
   const target = pmrem.fromScene(scene, 0.035);
   pmrem.dispose();
   geometry.dispose();
@@ -954,8 +985,8 @@ const Lanyard = ({
 
     const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
     const scene = new THREE.Scene();
-    const environment = buildEnvironment(renderer);
-    scene.environment = environment.texture;
+    let environment: THREE.WebGLRenderTarget | null = null; // built once the shaders are warm (end of this effect)
+    let ready = false; // no frames until every shader has compiled in the background
     const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 200);
     const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
     keyLight.position.set(-2.5, 4, 6);
@@ -1272,6 +1303,7 @@ const Lanyard = ({
     };
 
     const render = () => {
+      if (!ready) return;
       cardGroup.position.copy(sim.body.position);
       cardGroup.quaternion.copy(sim.body.quaternion);
       updateBand();
@@ -1324,7 +1356,7 @@ const Lanyard = ({
     };
 
     const start = () => {
-      if (raf || !visible || !alive) return;
+      if (raf || !visible || !alive || !ready) return;
       sim.calm = 0;
       last = performance.now();
       raf = requestAnimationFrame(tick);
@@ -1428,7 +1460,7 @@ const Lanyard = ({
     const resize = () => {
       view.width = Math.max(1, container.clientWidth);
       view.height = Math.max(1, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); // full-hero canvas: 2x is ~1.8x the pixels for no visible gain
       renderer.setSize(view.width, view.height, false);
       apply();
       render();
@@ -1449,6 +1481,23 @@ const Lanyard = ({
     applyRef.current = apply;
     resize();
 
+    // Compile every shader in the background, then draw the first frame: compiling on first render froze the whole
+    // page (and Lenis scrolling) for ~2 s on integrated GPUs.
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    void warmPmrem(renderer, pmrem)
+      .then(() => {
+        if (!alive) { pmrem.dispose(); return; }
+        environment = buildEnvironment(renderer, pmrem);
+        scene.environment = environment.texture;
+        return renderer.compileAsync(scene, camera);
+      })
+      .then(() => {
+        if (!alive) return;
+        ready = true;
+        render();
+        start();
+      });
+
     return () => {
       alive = false;
       cancelAnimationFrame(raf);
@@ -1465,7 +1514,7 @@ const Lanyard = ({
       [bodyMesh, frontMesh, backMesh, ring, clampMesh, eyelet, band].forEach(mesh => mesh.geometry?.dispose());
       [frontMaterial, backMaterial, edgeMaterial, metalMaterial, bandMaterial].forEach(material => material.dispose());
       [frontTexture, backTexture, strapTexture, grain, weave].forEach(texture => texture.dispose());
-      environment.dispose();
+      environment?.dispose();
       renderer.dispose();
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
     };

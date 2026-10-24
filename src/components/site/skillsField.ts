@@ -180,8 +180,16 @@ export function createSkillField(host: HTMLElement, cv: HTMLCanvasElement, skill
       stepFoam(blobs, dt / 2, { w, h, held, t: now / 1000, attract });
       shapeFoam(blobs, dt / 2, w, h);
     }
+    // At rest only the slow drift (~10 px/s) and film shimmer move, which look the same at half rate; a full redraw of
+    // every bubble each frame kept integrated GPUs at 30-40 fps on 1.5-2x screens. Any touch goes back to full rate.
+    skip = calm() && !skip;
+    if (skip) return;
     draw(now, charge, dt);
   };
+  let skip = false;
+  /** Nothing touched, growing, flying or popping. */
+  const calm = () => !ptr.in && held < 0 && !press && !ripples.length && !drops.length
+    && blobs.every((b) => Math.abs(b.sv) < 0.05 && b.vx * b.vx + b.vy * b.vy < 900);
 
   const capture = (e: PointerEvent) => { try { cv.setPointerCapture(e.pointerId); } catch { /* pointer already released */ } };
   const local = (e: PointerEvent) => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };

@@ -13,8 +13,11 @@ const offIcons = [Monitor, Swords, Brain, ShieldCheck];
 const socialIcon = { GitHub: Github, LinkedIn: Linkedin } as Record<string, typeof Github>;
 const [first, ...rest] = site.name.split(" ");
 
-/** Live IST clock, ticking each second; blank until mounted so the export has no stale time. */
-function useClock() {
+/**
+ * Live IST clock, ticking each second; blank until mounted so the export has no stale time. Its own component so the
+ * tick re-renders only this, not the whole section and its 3D scene.
+ */
+function Clock() {
   const [time, setTime] = useState("");
   useEffect(() => {
     const tick = () => setTime(formatClock(new Date(), site.timeZone));
@@ -22,7 +25,7 @@ function useClock() {
     const id = window.setInterval(tick, 1000);
     return () => window.clearInterval(id);
   }, []);
-  return time;
+  return <time className="mono" suppressHydrationWarning>{time || "--:--:-- --"}</time>;
 }
 
 /** Runs `onProgress(0..1)` while `el` scrolls through the viewport, via GSAP ScrollTrigger. */
@@ -45,7 +48,6 @@ function useScrub(el: React.RefObject<HTMLElement | null>, onProgress: (p: numbe
 }
 
 export function About() {
-  const time = useClock();
   const story = useRef<HTMLParagraphElement>(null);
   const timeline = useRef<HTMLOListElement>(null);
 
@@ -68,7 +70,7 @@ export function About() {
           <p className="profile-meta">
             <MapPin size={14} aria-hidden="true" /> {site.location}
             <span aria-hidden="true">·</span>
-            <time className="mono" suppressHydrationWarning>{time || "--:--:-- --"}</time>
+            <Clock />
           </p>
           <div className="profile-art"><Robot /></div>
           <div className="profile-foot">

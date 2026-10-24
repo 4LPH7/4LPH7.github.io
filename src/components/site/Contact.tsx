@@ -20,15 +20,17 @@ export function Contact() {
   useEffect(() => {
     const nav = navigator as Navigator & { deviceMemory?: number };
     const gl = document.createElement("canvas");
-    setThree(canUse3D({
+    const ok = canUse3D({
       reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
       webgl: Boolean(gl.getContext("webgl2") ?? gl.getContext("webgl")),
       cores: nav.hardwareConcurrency,
       memory: nav.deviceMemory,
       saveData: false,
-    }));
+    });
+    // Build the orb once the page is idle: its dense sphere and shaders otherwise land in the middle of the hero intro.
+    const idle = window.setTimeout(() => (window.requestIdleCallback ?? ((f: () => void) => f()))(() => setThree(ok)), 3000);
     const el = orb.current;
-    if (!el) return;
+    if (!el) return () => window.clearTimeout(idle);
     const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), { rootMargin: "100px" });
     io.observe(el);
     const section = el.closest("section");
@@ -43,7 +45,7 @@ export function Contact() {
     const leave = () => { pointer.current.on = false; };
     section?.addEventListener("pointermove", move);
     section?.addEventListener("pointerleave", leave);
-    return () => { io.disconnect(); section?.removeEventListener("pointermove", move); section?.removeEventListener("pointerleave", leave); };
+    return () => { window.clearTimeout(idle); io.disconnect(); section?.removeEventListener("pointermove", move); section?.removeEventListener("pointerleave", leave); };
   }, []);
 
   return (

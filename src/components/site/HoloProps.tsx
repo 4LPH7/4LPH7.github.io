@@ -60,6 +60,7 @@ const LEDS = Array.from({ length: 8 }, (_, n) => ({ id: `led-${n}`, n, at: [-0.3
 export function Crate() {
   const leds = useRef<THREE.Mesh[]>([]);
   const metal = useMemo(() => new THREE.MeshStandardMaterial({ color: "#0d1017", metalness: 0.7, roughness: 0.38 }), []);
+  const edge = useMemo(() => neon("#22d3ee"), []); // made once: an inline neon() leaked new materials on every re-render
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
     leds.current.forEach((m, i) => {
@@ -71,9 +72,9 @@ export function Crate() {
     <group position={[0, 0.5, -0.14]}>
       <mesh material={metal} castShadow receiveShadow><boxGeometry args={[1.1, 1, 0.82]} /></mesh>
       {[-1, 1].map((s) => (
-        <mesh key={s} position={[0.55 * s, 0, 0.41]} material={neon("#22d3ee")}><boxGeometry args={[0.012, 1, 0.012]} /></mesh>
+        <mesh key={s} position={[0.55 * s, 0, 0.41]} material={edge}><boxGeometry args={[0.012, 1, 0.012]} /></mesh>
       ))}
-      <mesh position={[0, 0.5, 0.41]} material={neon("#22d3ee")}><boxGeometry args={[1.1, 0.012, 0.012]} /></mesh>
+      <mesh position={[0, 0.5, 0.41]} material={edge}><boxGeometry args={[1.1, 0.012, 0.012]} /></mesh>
       {LEDS.map((led) => (
         <mesh key={led.id} ref={(m) => { if (m) leds.current[led.n] = m; }} position={led.at}>
           <boxGeometry args={[0.035, 0.02, 0.005]} />

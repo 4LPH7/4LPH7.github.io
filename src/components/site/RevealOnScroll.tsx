@@ -6,6 +6,7 @@ import { isBelowFold, staggerDelay } from "@/lib/reveal";
 /**
  * Fades `[data-reveal]` blocks in as they scroll into view. The exported HTML never carries a hidden state,
  * so the page reads fine without JS; only elements that start below the fold are hidden, after hydration.
+ * Also pauses CSS animations in sections that are off-screen.
  */
 export function RevealOnScroll() {
   useEffect(() => {
@@ -34,6 +35,16 @@ export function RevealOnScroll() {
         el.style.removeProperty("--reveal-delay");
       }
     };
+  }, []);
+
+  // Looping CSS animations (badge spin, caret, status pulses) force a style and layer update every frame even when
+  // off-screen, so sections out of view pause theirs (see [data-offscreen] in site.css).
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.target.toggleAttribute("data-offscreen", !e.isIntersecting);
+    });
+    for (const el of document.querySelectorAll("main > section, footer")) io.observe(el);
+    return () => io.disconnect();
   }, []);
   return null;
 }

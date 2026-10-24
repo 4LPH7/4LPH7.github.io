@@ -1012,7 +1012,8 @@ const TechText = ({
         oy = c.top - b.top;
         cw = Math.max(1, b.width);
         ch = Math.max(1, b.height);
-        Object.assign(canvas.style, { position: 'absolute', left: `${-ox}px`, top: `${-oy}px`, width: `${cw}px`, height: `${ch}px`, maxWidth: 'none', maxHeight: 'none', pointerEvents: 'none' });
+        // Offset with a transform: moving it with left/top counted as a 0.27 layout shift (CLS) when it grew to the bounds.
+        Object.assign(canvas.style, { position: 'absolute', left: '0', top: '0', transform: `translate(${-ox}px, ${-oy}px)`, width: `${cw}px`, height: `${ch}px`, maxWidth: 'none', maxHeight: 'none', pointerEvents: 'none' });
       } else {
         ox = oy = 0;
         cw = width;

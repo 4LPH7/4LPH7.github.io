@@ -4,6 +4,7 @@ import { Environment, Lightformer } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { Precompile } from "./Precompile";
 
 type Pointer = React.RefObject<{ x: number; y: number; on: boolean }>;
 
@@ -171,6 +172,7 @@ export default function BlobScene({ pointer, active }: { pointer: Pointer; activ
         <Lightformer form="ring" intensity={1.2} color="#e0e7ff" position={[3, -1, 1]} scale={2} />
       </Environment>
       <Symbiote pointer={pointer} />
+      <Precompile />
     </Canvas>
   );
 }

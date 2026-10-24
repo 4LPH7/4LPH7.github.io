@@ -12,12 +12,19 @@ const v3 = new THREE.Vector3();
 const q1 = new THREE.Quaternion();
 const q2 = new THREE.Quaternion();
 const IDENTITY = new THREE.Quaternion();
+const scratchP = new THREE.Vector3();
+const scratchS = new THREE.Vector3();
 
-export const pos = (o: THREE.Object3D, out = new THREE.Vector3()) => o.getWorldPosition(out);
+// World transforms are read straight from `matrixWorld`: the rest-pose reset refreshes the whole rig and every change
+// below refreshes the subtree it touches, so the cache is always current. (getWorldPosition / getWorldQuaternion
+// re-walked and recomputed every ancestor on each call, dozens of times a frame.)
+export const pos = (o: THREE.Object3D, out = new THREE.Vector3()) => out.setFromMatrixPosition(o.matrixWorld);
+const worldQuat = (o: THREE.Object3D, out: THREE.Quaternion) => { o.matrixWorld.decompose(scratchP, out, scratchS); return out; };
 
 /** Set a bone's world rotation, converting to its parent's space. */
 function setWorldQuat(bone: THREE.Object3D, world: THREE.Quaternion) {
-  bone.parent?.getWorldQuaternion(q2).invert();
+  if (bone.parent) worldQuat(bone.parent, q2).invert();
+  else q2.identity();
   bone.quaternion.copy(q2.multiply(world));
   bone.updateMatrixWorld(true);
 }
@@ -25,7 +32,7 @@ function setWorldQuat(bone: THREE.Object3D, world: THREE.Quaternion) {
 /** Rotate a bone by `delta` (a world-space rotation), optionally only part of the way. */
 export function turn(bone: THREE.Object3D, delta: THREE.Quaternion, weight = 1) {
   const d = weight >= 1 ? delta : q1.copy(IDENTITY).slerp(delta, weight);
-  const w = bone.getWorldQuaternion(new THREE.Quaternion());
+  const w = worldQuat(bone, new THREE.Quaternion());
   setWorldQuat(bone, w.premultiply(d));
 }
 
@@ -91,8 +98,7 @@ export class Followers {
     const r0 = new THREE.Quaternion(), r1 = new THREE.Quaternion();
     const m = new THREE.Matrix4(), inv = new THREE.Matrix4();
     for (const { o, limb, rel, w } of this.items) {
-      o.updateWorldMatrix(true, false);
-      o.matrixWorld.decompose(p0, r0, s);
+      o.matrixWorld.decompose(p0, r0, s); // current: see the note on `pos`
       m.multiplyMatrices(limb.matrixWorld, rel).decompose(p1, r1, s);
       p0.lerp(p1, w);
       r0.slerp(r1, w);
